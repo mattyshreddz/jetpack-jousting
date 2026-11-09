@@ -54,7 +54,7 @@ func _process(delta: float) -> void:
 			camera.position.x = lerpf(camera.position.x, tilt.x * 0.25, 0.09)
 		if match_active:
 			var bob := sin(Time.get_ticks_msec() * 0.004) * 0.012
-			view_lance.position.y = lance_home.y + bob
+			view_lance.position.y = bob
 			view_lance.rotation.x = sin(Time.get_ticks_msec() * 0.003) * 0.012
 	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
 		camera.position.x = lerpf(camera.position.x, -0.35, 0.12)
