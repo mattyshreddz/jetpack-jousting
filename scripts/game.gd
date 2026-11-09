@@ -210,7 +210,6 @@ func _build_flags() -> void:
 			plane.size = Vector2(0.9, 1.45)
 			flag.mesh = plane
 			flag.position = Vector3(x - 0.42 * side, 3.9, z)
-			flag.rotation_degrees.x = 90
 			var cloth := StandardMaterial3D.new()
 			cloth.albedo_texture = banner_texture
 			cloth.roughness = 0.9
@@ -248,7 +247,6 @@ func _build_first_person_view() -> void:
 	shield_plane.size = Vector2(0.48, 0.62)
 	shield.mesh = shield_plane
 	shield.position = Vector3(-0.67, -0.48, -0.58)
-	shield.rotation_degrees.x = 90
 	var shield_material := StandardMaterial3D.new()
 	shield_material.albedo_texture = load("res://assets/royal_shield.svg")
 	shield_material.roughness = 0.42
