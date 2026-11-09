@@ -1,21 +1,22 @@
-# Jetpack Jousting
+# Jetpack Jousting — Godot 4
 
-A first playable mobile-web prototype for the portrait iPhone game.
+This repository now contains the start of the Godot 4 project.
 
-## Run locally
-Open `index.html` in a browser. Motion controls require HTTPS (a secure context) and a tap to grant iPhone motion permission.
+## Open in Godot
+1. On GitHub, click **Code → Download ZIP** and extract the ZIP.
+2. Open Godot 4.
+3. In the Project Manager, choose **Import**.
+4. Browse to the extracted folder and select `project.godot`.
+5. Click **Import & Edit**, then press **F6** to run the current scene or **F5** to run the project.
 
-## Publish for iPhone testing
-In the repository, open **Settings → Pages**. Under **Build and deployment**, choose **Deploy from a branch**, select **main** and **/(root)**, then Save. GitHub will show the published URL when deployment is ready.
+## Current prototype
+- Procedural 3D arena and simple knight/jetpack placeholders
+- Portrait-oriented project settings
+- Calibration button using the device gravity sensor
+- Four touch controls: high/low block and high/low thrust
+- Keyboard left/right fallback for desktop testing
 
-**Private repository note:** GitHub Pages support for private repositories depends on the account plan. If Pages is unavailable, keep the repo private and use another HTTPS host; don't change visibility unless you want the source public.
+## Motion sensor note
+Godot exposes device sensors through `Input.get_gravity()`, `Input.get_gyroscope()`, and `Input.get_accelerometer()`. This prototype uses the gravity vector for tilt steering because it provides a stable tilt reference. Native iOS sensor testing requires an exported iOS app and Apple's build tools (macOS + Xcode). Desktop testing uses keyboard fallback.
 
-## iPhone controls
-Open the HTTPS site in Safari and tap **CALIBRATE & START**. Grant motion permission, then hold the phone in your normal playing position while calibration records neutral orientation.
-
-- Upper-left: high block
-- Lower-left: low block
-- Upper-right: high thrust
-- Lower-right: low thrust
-
-This is an early playable prototype, not the finished 3D game. The arena and knights are currently rendered in 2D; the next milestone is the proper 3D scene and refined gyroscope steering/combat.
+This is an early blockout, not final art or finished combat balancing.
