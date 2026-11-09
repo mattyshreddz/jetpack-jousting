@@ -85,6 +85,18 @@ func _build_world() -> void:
 	add_child(sun)
 
 	_add_box("Golden jousting lane", Vector3(0, -0.45, -4), Vector3(10, 0.8, 30), Color(0.55, 0.30, 0.13))
+	var floor_surface := MeshInstance3D.new()
+	floor_surface.name = "Textured sandstone floor"
+	var floor_plane := PlaneMesh.new()
+	floor_plane.size = Vector2(10.0, 30.0)
+	floor_surface.mesh = floor_plane
+	floor_surface.position = Vector3(0, -0.035, -4)
+	var floor_material := StandardMaterial3D.new()
+	floor_material.albedo_texture = load("res://assets/arena_floor.svg")
+	floor_material.roughness = 0.96
+	floor_material.uv1_scale = Vector3(5.0, 15.0, 1.0)
+	floor_surface.material_override = floor_material
+	add_child(floor_surface)
 	_add_box("Left arena wall", Vector3(-5.2, 0.6, -4), Vector3(0.35, 1.8, 30), Color(0.42, 0.12, 0.12))
 	_add_box("Right arena wall", Vector3(5.2, 0.6, -4), Vector3(0.35, 1.8, 30), Color(0.42, 0.12, 0.12))
 	_add_box("Center gold lane", Vector3(0, -0.015, -4), Vector3(0.12, 0.035, 28), Color(1.0, 0.77, 0.28))
