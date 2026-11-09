@@ -126,8 +126,9 @@ func _build_green_countryside() -> void:
 	grass.mesh = grass_mesh
 	grass.position = Vector3(0, -0.49, -12)
 	var grass_mat := StandardMaterial3D.new()
-	grass_mat.albedo_color = Color(0.20, 0.39, 0.16)
+	grass_mat.albedo_texture = load("res://assets/grass_meadow.svg") as Texture2D
 	grass_mat.roughness = 1.0
+	grass_mat.uv1_scale = Vector3(12.0, 12.0, 1.0)
 	grass.material_override = grass_mat
 	add_child(grass)
 
@@ -138,7 +139,11 @@ func _build_green_countryside() -> void:
 			hill.scale = Vector3(7.0, 2.0 + i * 0.35, 11.0)
 
 	# A distant northern-European stone keep: towers, curtain wall and slate roofs.
-	_add_box("Distant castle curtain wall", Vector3(0, 3.1, -30.0), Vector3(25.0, 5.0, 1.2), Color(0.48, 0.49, 0.45))
+	var castle_wall := _add_box("Distant castle curtain wall", Vector3(0, 3.1, -30.0), Vector3(25.0, 5.0, 1.2), Color.WHITE)
+	var stone_mat := StandardMaterial3D.new()
+	stone_mat.albedo_texture = load("res://assets/castle_stone.svg") as Texture2D
+	stone_mat.roughness = 0.95
+	castle_wall.material_override = stone_mat
 	for x in [-10.0, -5.0, 0.0, 5.0, 10.0]:
 		_add_box("Castle battlement", Vector3(x, 5.85, -30.0), Vector3(1.1, 0.65, 1.4), Color(0.55, 0.55, 0.50))
 	for x in [-12.0, 12.0]:
@@ -256,21 +261,79 @@ func _make_opponent(pos: Vector3) -> Node3D:
 	root.name = "RivalJouster"
 	root.position = pos
 	add_child(root)
-	_add_capsule_child(root, "Crimson armored torso", Vector3(0, 0, 0), 0.39, 1.05, Color(0.58, 0.035, 0.075))
-	_add_sphere_child(root, "Polished steel helmet", Vector3(0, 0.78, 0), 0.36, Color(0.78, 0.83, 0.9))
-	_add_box_child(root, "Dark helmet visor", Vector3(0, 0.76, 0.33), Vector3(0.42, 0.11, 0.045), Color(0.035, 0.07, 0.12))
-	_add_box_child(root, "Gold helmet crest", Vector3(0, 1.15, 0), Vector3(0.10, 0.34, 0.10), Color(1.0, 0.68, 0.08))
-	_add_sphere_child(root, "Left shoulder plate", Vector3(-0.43, 0.34, 0), 0.25, Color(0.68, 0.08, 0.12))
-	_add_sphere_child(root, "Right shoulder plate", Vector3(0.43, 0.34, 0), 0.25, Color(0.68, 0.08, 0.12))
-	_add_cylinder_child(root, "Jetpack left tank", Vector3(-0.43, 0.0, -0.28), 0.13, 0.72, Color(0.32, 0.35, 0.4))
-	_add_cylinder_child(root, "Jetpack right tank", Vector3(-0.68, 0.0, -0.28), 0.13, 0.72, Color(0.32, 0.35, 0.4))
-	_add_glow_orb_child(root, Vector3(-0.43, -0.48, -0.28), 0.12, Color(0.12, 0.62, 1.0))
-	_add_glow_orb_child(root, Vector3(-0.68, -0.48, -0.28), 0.12, Color(1.0, 0.34, 0.05))
-	var lance := _make_cylinder("Rival lance", 0.04, 2.7, Color(0.58, 0.34, 0.13))
-	lance.rotation_degrees.x = 90
-	lance.position = Vector3(0.7, 0.0, 1.0)
-	root.add_child(lance)
+
+	# Silhouette: layered rounded armor rather than a stack of cubes.
+	_add_capsule_child(root, "Crimson padded gambeson", Vector3(0, 0.0, 0), 0.34, 1.05, Color(0.20, 0.055, 0.075))
+	_add_ellipsoid_child(root, "Sculpted crimson breastplate", Vector3(0, 0.24, 0.12), Vector3(0.43, 0.48, 0.22), Color(0.60, 0.055, 0.095))
+	_add_ellipsoid_child(root, "Gold breastplate rim", Vector3(0, 0.26, 0.245), Vector3(0.36, 0.39, 0.035), Color(0.91, 0.62, 0.19))
+	_add_ellipsoid_child(root, "Breastplate inset", Vector3(0, 0.26, 0.275), Vector3(0.32, 0.35, 0.035), Color(0.47, 0.045, 0.075))
+	_add_ellipsoid_child(root, "Neck gorget", Vector3(0, 0.62, 0.06), Vector3(0.29, 0.17, 0.24), Color(0.72, 0.76, 0.81))
+	for side in [-1, 1]:
+		_add_ellipsoid_child(root, "Gold edged pauldron", Vector3(float(side) * 0.43, 0.38, 0.02), Vector3(0.29, 0.25, 0.29), Color(0.79, 0.57, 0.20))
+		_add_ellipsoid_child(root, "Crimson pauldron enamel", Vector3(float(side) * 0.43, 0.40, 0.12), Vector3(0.235, 0.19, 0.22), Color(0.59, 0.045, 0.08))
+		var upper_arm := _add_capsule_child(root, "Armored upper arm", Vector3(float(side) * 0.53, -0.02, 0.02), 0.13, 0.55, Color(0.69, 0.72, 0.77))
+		upper_arm.rotation.z = float(side) * -0.18
+		var forearm := _add_capsule_child(root, "Armored forearm", Vector3(float(side) * 0.61, -0.36, 0.08), 0.12, 0.43, Color(0.76, 0.79, 0.83))
+		forearm.rotation.z = float(side) * 0.12
+		_add_ellipsoid_child(root, "Leather gauntlet", Vector3(float(side) * 0.62, -0.59, 0.13), Vector3(0.15, 0.13, 0.16), Color(0.20, 0.12, 0.09))
+		_add_ellipsoid_child(root, "Hip armor", Vector3(float(side) * 0.19, -0.62, 0.02), Vector3(0.20, 0.24, 0.22), Color(0.67, 0.70, 0.75))
+		var leg := _add_capsule_child(root, "Steel greave", Vector3(float(side) * 0.19, -1.02, 0.02), 0.14, 0.58, Color(0.60, 0.65, 0.72))
+		leg.rotation.z = float(side) * -0.05
+
+	# Helmet with a distinct brow, visor slit, cheek guards and plume.
+	_add_ellipsoid_child(root, "Steel helmet dome", Vector3(0, 0.91, 0.02), Vector3(0.34, 0.39, 0.32), Color(0.75, 0.80, 0.86))
+	_add_ellipsoid_child(root, "Helmet gold brow", Vector3(0, 0.83, 0.30), Vector3(0.32, 0.075, 0.055), Color(0.94, 0.68, 0.23))
+	_add_box_child(root, "Black visor opening", Vector3(0, 0.72, 0.315), Vector3(0.43, 0.105, 0.045), Color(0.035, 0.055, 0.075))
+	_add_box_child(root, "Visor highlight", Vector3(0, 0.755, 0.343), Vector3(0.32, 0.018, 0.012), Color(0.78, 0.88, 0.95))
+	for side in [-1, 1]:
+		_add_ellipsoid_child(root, "Helmet cheek guard", Vector3(float(side) * 0.25, 0.63, 0.18), Vector3(0.11, 0.21, 0.15), Color(0.63, 0.68, 0.75))
+	var crest := _add_capsule_child(root, "Crimson helmet plume", Vector3(0, 1.25, -0.02), 0.075, 0.55, Color(0.72, 0.055, 0.10))
+	crest.rotation.z = -0.22
+
+	# Heraldic chest cloth: an actual SVG texture on a thin plane.
+	var tabard := MeshInstance3D.new()
+	tabard.name = "Knight heraldic chest cloth"
+	var tabard_mesh := PlaneMesh.new()
+	tabard_mesh.size = Vector2(0.48, 0.48)
+	tabard.mesh = tabard_mesh
+	tabard.position = Vector3(0, 0.15, 0.315)
+	var tabard_mat := StandardMaterial3D.new()
+	tabard_mat.albedo_texture = load("res://assets/knight_heraldry.svg") as Texture2D
+	tabard_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	tabard_mat.roughness = 0.78
+	tabard.material_override = tabard_mat
+	root.add_child(tabard)
+
+	# Twin metal jetpack tanks and bright, compact exhausts.
+	for side in [-1, 1]:
+		var tank := _make_cylinder("Jetpack steel pressure tank", 0.13, 0.72, Color(0.34, 0.40, 0.48))
+		tank.position = Vector3(float(side) * 0.25, 0.02, -0.31)
+		root.add_child(tank)
+		_add_ellipsoid_child(root, "Jetpack brass valve", Vector3(float(side) * 0.25, 0.40, -0.31), Vector3(0.10, 0.07, 0.10), Color(0.90, 0.61, 0.19))
+		_add_glow_orb_child(root, Vector3(float(side) * 0.25, -0.43, -0.31), 0.10, Color(1.0, 0.42, 0.10))
+
+	var rival_lance := _make_cylinder("Rival lance", 0.035, 2.5, Color(0.52, 0.31, 0.14))
+	rival_lance.rotation_degrees.x = 90
+	rival_lance.position = Vector3(0.67, -0.04, 0.92)
+	root.add_child(rival_lance)
+	var rival_tip := _make_cone("Rival lance steel tip", 0.10, 0.34, Color(0.82, 0.88, 0.93))
+	rival_tip.rotation_degrees.x = -90
+	rival_tip.position = Vector3(0.67, -0.04, 2.25)
+	root.add_child(rival_tip)
 	return root
+
+func _add_ellipsoid_child(parent: Node3D, label: String, pos: Vector3, size: Vector3, color: Color) -> MeshInstance3D:
+	var item := MeshInstance3D.new()
+	item.name = label
+	var mesh := SphereMesh.new()
+	mesh.radius = 1.0
+	mesh.height = 2.0
+	item.mesh = mesh
+	item.position = pos
+	item.scale = size
+	item.material_override = _mat(color)
+	parent.add_child(item)
+	return item
 
 func _build_hud() -> void:
 	var layer := CanvasLayer.new()
