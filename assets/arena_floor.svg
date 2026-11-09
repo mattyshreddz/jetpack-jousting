@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs><linearGradient id="sand" x2="0" y2="1"><stop stop-color="#c89b62"/><stop offset="1" stop-color="#a97845"/></linearGradient><pattern id="stones" width="128" height="96" patternUnits="userSpaceOnUse"><rect width="128" height="96" fill="url(#sand)"/><path d="M0 2H128M0 48H128M0 94H128M64 2V48M0 48V94M128 48V94" fill="none" stroke="#785437" stroke-width="5" opacity=".55"/><path d="M5 6H59M70 6H122M5 53H58M70 53H122" stroke="#f0c88f" stroke-width="3" opacity=".45"/><circle cx="22" cy="28" r="2" fill="#765234" opacity=".45"/><circle cx="94" cy="75" r="3" fill="#765234" opacity=".35"/></pattern></defs>
+<rect width="512" height="512" fill="url(#stones)"/>
+<path d="M0 0H512V512H0Z" fill="none" stroke="#f1d29c" stroke-width="8" opacity=".25"/>
+</svg>
