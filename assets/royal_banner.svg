@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="768" viewBox="0 0 512 768">
+<defs><linearGradient id="cloth" x2="1" y2="1"><stop stop-color="#173f91"/><stop offset=".55" stop-color="#245fc1"/><stop offset="1" stop-color="#102b68"/></linearGradient><linearGradient id="gold"><stop stop-color="#fff0a0"/><stop offset=".45" stop-color="#e9ad35"/><stop offset="1" stop-color="#9b5d12"/></linearGradient></defs>
+<path d="M24 18H488V650L256 750 24 650Z" fill="url(#cloth)" stroke="url(#gold)" stroke-width="18"/>
+<path d="M46 40H466V635L256 722 46 635Z" fill="none" stroke="#f7d77b" stroke-width="5"/>
+<path d="M256 126l25 66 70 5-54 45 17 68-58-37-58 37 17-68-54-45 70-5Z" fill="url(#gold)" stroke="#fff0a0" stroke-width="5"/>
+<path d="M256 285c-45-38-86-10-77 30 7 28 39 39 58 65-28 4-47 23-42 49 5 25 32 34 61 19 29 15 56 6 61-19 5-26-14-45-42-49 19-26 51-37 58-65 9-40-32-68-77-30Z" fill="url(#gold)" stroke="#fff0a0" stroke-width="8"/>
+<path d="M180 432l76 35 76-35-16 105-60 42-60-42Z" fill="#9e1d2d" stroke="url(#gold)" stroke-width="10"/>
+<path d="M224 480h64v14h-64zm0 28h64v14h-64z" fill="#ffe8a0"/>
+<path d="M112 70v70m288-70v70M112 570v48m288-48v48" stroke="#f7d77b" stroke-width="8" stroke-linecap="round"/>
+</svg>
