@@ -12,7 +12,7 @@ A portrait first-person jetpack jousting prototype built in Godot 4.
 ## Art pass in this prototype
 - Clearer daylight lighting with glow disabled
 - Rounded capsule-based rival armor and spectator silhouettes
-- Custom SVG royal banner and shield artwork in `assets/`
+- Custom SVG royal banner, shield, and sandstone floor textures in `assets/`
 - Reduced visual clutter and stronger blue, crimson, steel, and gold palette
 
 These are still prototype-quality assets and geometry, not final production character models or animation.
