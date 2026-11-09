@@ -412,7 +412,7 @@ func _make_sphere(label: String, pos: Vector3, radius: float, color: Color) -> M
 	add_child(item)
 	return item
 
-func _make_sphere_child(parent: Node3D, label: String, pos: Vector3, radius: float, color: Color) -> void:
+func _make_sphere_child(parent: Node3D, label: String, pos: Vector3, radius: float, color: Color) -> MeshInstance3D:
 	var item := MeshInstance3D.new()
 	item.name = label
 	var mesh := SphereMesh.new()
@@ -422,6 +422,7 @@ func _make_sphere_child(parent: Node3D, label: String, pos: Vector3, radius: flo
 	item.position = pos
 	item.material_override = _mat(color)
 	parent.add_child(item)
+	return item
 
 func _add_box_child(parent: Node3D, label: String, pos: Vector3, size: Vector3, color: Color) -> void:
 	var item := _make_box(label, size, color)
