@@ -35,7 +35,7 @@ func _process(delta: float) -> void:
 		intro_time += delta
 		var t := clampf(intro_time / INTRO_LENGTH, 0.0, 1.0)
 		camera.position = camera_home.lerp(Vector3(0, 1.85, 6.3), _ease_out(t))
-		opponent.position.z = lerpf(-18.0, -7.8, _ease_out(clampf((intro_time - 0.7) / 3.5, 0.0, 1.0)))
+		opponent.position.z = lerpf(-18.0, -6.2, _ease_out(clampf((intro_time - 0.7) / 3.5, 0.0, 1.0)))
 		camera.rotation.x = lerpf(deg_to_rad(-5.0), deg_to_rad(-1.5), _ease_out(t))
 		if intro_time >= INTRO_LENGTH:
 			intro_running = false
@@ -124,7 +124,7 @@ func _build_green_countryside() -> void:
 	var grass_mesh := PlaneMesh.new()
 	grass_mesh.size = Vector2(90.0, 90.0)
 	grass.mesh = grass_mesh
-	grass.position = Vector3(0, -0.49, -12)
+	grass.position = Vector3(0, -0.88, -12)
 	var grass_mat := StandardMaterial3D.new()
 	grass_mat.albedo_texture = load("res://assets/grass_meadow.svg") as Texture2D
 	grass_mat.roughness = 1.0
@@ -139,16 +139,16 @@ func _build_green_countryside() -> void:
 			hill.scale = Vector3(7.0, 2.0 + i * 0.35, 11.0)
 
 	# A distant northern-European stone keep: towers, curtain wall and slate roofs.
-	var castle_wall := _add_box("Distant castle curtain wall", Vector3(0, 3.1, -30.0), Vector3(25.0, 5.0, 1.2), Color.WHITE)
+	var castle_wall := _add_box("Distant castle curtain wall", Vector3(0, 4.2, -24.0), Vector3(32.0, 7.0, 1.8), Color.WHITE)
 	var stone_mat := StandardMaterial3D.new()
 	stone_mat.albedo_texture = load("res://assets/castle_stone.svg") as Texture2D
 	stone_mat.roughness = 0.95
 	castle_wall.material_override = stone_mat
 	for x in [-10.0, -5.0, 0.0, 5.0, 10.0]:
-		_add_box("Castle battlement", Vector3(x, 5.85, -30.0), Vector3(1.1, 0.65, 1.4), Color(0.55, 0.55, 0.50))
+		_add_box("Castle battlement", Vector3(x * 1.25, 7.95, -24.0), Vector3(1.1, 0.65, 1.4), Color(0.55, 0.55, 0.50))
 	for x in [-12.0, 12.0]:
-		_add_cylinder("Castle round tower", Vector3(x, 4.0, -30.0), 1.55, 8.0, Color(0.52, 0.53, 0.49))
-		_add_cone_roof(x, 8.5, -30.0)
+		_add_cylinder("Castle round tower", Vector3(x * 1.25, 5.2, -24.0), 1.9, 10.4, Color(0.52, 0.53, 0.49))
+		_add_cone_roof(x * 1.25, 10.8, -24.0)
 	# Small leafy trees break up the green horizon.
 	for side in [-1, 1]:
 		for i in range(4):
@@ -258,6 +258,7 @@ func _make_opponent(pos: Vector3) -> Node3D:
 	var root := Node3D.new()
 	root.name = "RivalJouster"
 	root.position = pos
+	root.scale = Vector3(1.35, 1.35, 1.35)
 	add_child(root)
 
 	# Silhouette: layered rounded armor rather than a stack of cubes.
