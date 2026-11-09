@@ -178,13 +178,11 @@ func _build_first_person_view() -> void:
 	tip.position = Vector3(0.53, -0.39, -2.92)
 	rig.add_child(tip)
 
-	var forearm := _make_box("Armored forearm", Vector3(0.38, 0.18, 0.62), Color(0.14, 0.28, 0.58))
-	forearm.position = Vector3(0.68, -0.65, -0.42)
-	rig.add_child(forearm)
+	var forearm := _add_capsule_child(rig, "Rounded armored forearm", Vector3(0.68, -0.65, -0.42), 0.15, 0.72, Color(0.12, 0.27, 0.61))
+	forearm.rotation_degrees.x = 90
 	var gauntlet := _make_sphere_child(rig, "Steel gauntlet", Vector3(0.53, -0.48, -0.55), 0.2, Color(0.72, 0.78, 0.85))
-	var left_arm := _make_box("Offhand vambrace", Vector3(0.25, 0.16, 0.5), Color(0.14, 0.28, 0.58))
-	left_arm.position = Vector3(-0.65, -0.68, -0.3)
-	rig.add_child(left_arm)
+	var left_arm := _add_capsule_child(rig, "Rounded offhand vambrace", Vector3(-0.65, -0.68, -0.3), 0.12, 0.56, Color(0.12, 0.27, 0.61))
+	left_arm.rotation_degrees.x = 90
 	var shield := MeshInstance3D.new()
 	var shield_plane := PlaneMesh.new()
 	shield_plane.size = Vector2(0.48, 0.62)
