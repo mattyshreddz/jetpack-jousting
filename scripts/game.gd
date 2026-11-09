@@ -158,18 +158,14 @@ func _build_first_person_view() -> void:
 	var forearm := _make_box("Armored forearm", Vector3(0.38, 0.18, 0.62), Color(0.14, 0.28, 0.58))
 	forearm.position = Vector3(0.68, -0.65, -0.42)
 	rig.add_child(forearm)
-	var gauntlet := _make_sphere("Steel gauntlet", 0.2, Color(0.72, 0.78, 0.85))
-	gauntlet.position = Vector3(0.53, -0.48, -0.55)
-	rig.add_child(gauntlet)
+	var gauntlet := _make_sphere_child(rig, "Steel gauntlet", Vector3(0.53, -0.48, -0.55), 0.2, Color(0.72, 0.78, 0.85))
 	var left_arm := _make_box("Offhand vambrace", Vector3(0.25, 0.16, 0.5), Color(0.14, 0.28, 0.58))
 	left_arm.position = Vector3(-0.65, -0.68, -0.3)
 	rig.add_child(left_arm)
 	var shield := _make_box("Small jousting shield", Vector3(0.38, 0.48, 0.12), Color(0.72, 0.08, 0.12))
 	shield.position = Vector3(-0.67, -0.48, -0.58)
-	trig.add_child(shield)
-	var shield_badge := _make_sphere("Shield gold boss", 0.11, Color(1.0, 0.75, 0.12))
-	shield_badge.position = Vector3(-0.67, -0.48, -0.67)
-	trig.add_child(shield_badge)
+	rig.add_child(shield)
+	var shield_badge := _make_sphere_child(rig, "Shield gold boss", Vector3(-0.67, -0.48, -0.67), 0.11, Color(1.0, 0.75, 0.12))
 
 func _make_opponent(pos: Vector3) -> Node3D:
 	var root := Node3D.new()
@@ -445,6 +441,15 @@ func _add_glow_orb_child(parent: Node3D, pos: Vector3, radius: float, color: Col
 	orb.position = pos
 	orb.material_override = _mat(color, true)
 	parent.add_child(orb)
+
+func _ease_out(t: float) -> float:
+	return 1.0 - pow(1.0 - clampf(t, 0.0, 1.0), 3.0)
+
+func _add_sphere(label: String, pos: Vector3, radius: float, color: Color) -> MeshInstance3D:
+	return _make_sphere(label, pos, radius, color)
+
+func _add_sphere_child(parent: Node3D, label: String, pos: Vector3, radius: float, color: Color) -> void:
+	_make_sphere_child(parent, label, pos, radius, color)
 
 func _add_label_3d(label_text: String, pos: Vector3, color: Color) -> void:
 	var label := Label3D.new()
