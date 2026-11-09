@@ -67,20 +67,20 @@ func _build_world() -> void:
 	var world_env := WorldEnvironment.new()
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.22, 0.48, 0.78)
+	env.background_color = Color(0.36, 0.64, 0.91)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(1.0, 0.78, 0.58)
-	env.ambient_light_energy = 0.85
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.glow_enabled = true
-	env.glow_intensity = 0.55
+	env.ambient_light_energy = 0.62
+	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
+	env.glow_enabled = false
+	env.glow_intensity = 0.0
 	world_env.environment = env
 	add_child(world_env)
 
 	var sun := DirectionalLight3D.new()
 	sun.rotation_degrees = Vector3(-48, -28, 0)
 	sun.light_color = Color(1.0, 0.78, 0.52)
-	sun.light_energy = 1.8
+	sun.light_energy = 1.25
 	sun.shadow_enabled = true
 	add_child(sun)
 
@@ -105,20 +105,32 @@ func _build_world() -> void:
 	add_child(camera)
 
 func _build_stands() -> void:
-	var seat_colors := [Color(0.75, 0.13, 0.12), Color(0.12, 0.28, 0.62), Color(0.93, 0.62, 0.12), Color(0.16, 0.48, 0.28), Color(0.72, 0.72, 0.76)]
+	var seat_colors := [Color(0.10, 0.27, 0.66), Color(0.72, 0.10, 0.14), Color(0.91, 0.59, 0.12), Color(0.12, 0.43, 0.27), Color(0.76, 0.77, 0.81)]
 	for side in [-1, 1]:
 		for row in range(4):
-			var x := float(side) * (6.4 + row * 0.55)
+			var x := float(side) * (6.4 + row * 0.62)
 			var y := 1.2 + row * 0.72
-			_add_box("Terrace tier", Vector3(x, y, -5.0), Vector3(2.0, 0.55, 25.0), Color(0.30, 0.20, 0.16))
-			for z_index in range(18):
-				var z := -16.0 + float(z_index) * 1.35
+			_add_box("Stone terrace", Vector3(x, y, -5.0), Vector3(2.0, 0.42, 25.0), Color(0.43, 0.34, 0.29))
+			for z_index in range(16):
+				var z := -15.5 + float(z_index) * 1.45
 				var color: Color = seat_colors[(z_index + row * 3 + side * 2 + 20) % seat_colors.size()]
-				_add_box("Colorful crowd", Vector3(x, y + 0.42, z), Vector3(0.35, 0.38, 0.35), color)
-		_add_box("Grandstand canopy", Vector3(float(side) * 7.8, 5.0, -5.0), Vector3(3.2, 0.35, 25.0), Color(0.62, 0.08, 0.12))
+				_add_crowd_figure(Vector3(x, y + 0.42, z), color)
+		_add_box("Grandstand canopy", Vector3(float(side) * 7.8, 5.0, -5.0), Vector3(3.2, 0.3, 25.0), Color(0.12, 0.25, 0.48))
 	for x in [-4.7, 4.7]:
-		_add_box("Gold torch pillar", Vector3(x, 2.2, -7.0), Vector3(0.3, 4.4, 0.3), Color(0.75, 0.48, 0.12))
-		_add_glow_orb(Vector3(x, 4.55, -7.0), 0.3, Color(1.0, 0.42, 0.08))
+		_add_box("Gold torch pillar", Vector3(x, 2.2, -7.0), Vector3(0.24, 4.4, 0.24), Color(0.75, 0.48, 0.12))
+		_add_glow_orb(Vector3(x, 4.55, -7.0), 0.22, Color(1.0, 0.42, 0.08))
+
+func _add_crowd_figure(pos: Vector3, color: Color) -> void:
+	var body := MeshInstance3D.new()
+	var capsule := CapsuleMesh.new()
+	capsule.radius = 0.16
+	capsule.height = 0.62
+	body.mesh = capsule
+	body.position = pos + Vector3(0, 0.24, 0)
+	body.material_override = _mat(color)
+	add_child(body)
+	var head := _make_sphere("Spectator head", pos + Vector3(0, 0.66, 0), 0.13, Color(0.86, 0.65, 0.48))
+	head.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 func _build_royal_box() -> void:
 	_add_box("Royal balcony", Vector3(-4.5, 2.2, -2.5), Vector3(2.5, 0.45, 2.2), Color(0.52, 0.08, 0.12))
@@ -129,12 +141,23 @@ func _build_royal_box() -> void:
 	_add_label_3d("THE KING", Vector3(-4.5, 4.45, -2.1), Color(1.0, 0.85, 0.4))
 
 func _build_flags() -> void:
+	var banner_texture := load("res://assets/royal_banner.svg") as Texture2D
 	for side in [-1, 1]:
 		for z in [-12.0, -6.0, 0.0, 5.0]:
 			var x := float(side) * 5.65
-			_add_box("Banner pole", Vector3(x, 3.0, z), Vector3(0.09, 6.0, 0.09), Color(0.75, 0.58, 0.26))
-			_add_box("Crimson banner", Vector3(x - 0.35 * side, 4.0, z), Vector3(0.75, 1.35, 0.08), Color(0.72, 0.06, 0.12))
-			_add_box("Banner gold stripe", Vector3(x - 0.35 * side, 4.0, z - 0.05), Vector3(0.12, 1.1, 0.03), Color(1.0, 0.78, 0.16))
+			_add_cylinder("Gold banner pole", Vector3(x, 3.0, z), 0.045, 6.0, Color(0.78, 0.58, 0.22))
+			var flag := MeshInstance3D.new()
+			var plane := PlaneMesh.new()
+			plane.size = Vector2(0.9, 1.45)
+			flag.mesh = plane
+			flag.position = Vector3(x - 0.42 * side, 3.9, z)
+			flag.rotation_degrees.x = 90
+			var cloth := StandardMaterial3D.new()
+			cloth.albedo_texture = banner_texture
+			cloth.roughness = 0.9
+			cloth.cull_mode = BaseMaterial3D.CULL_DISABLED
+			flag.material_override = cloth
+			add_child(flag)
 
 func _build_first_person_view() -> void:
 	var rig := Node3D.new()
@@ -162,24 +185,35 @@ func _build_first_person_view() -> void:
 	var left_arm := _make_box("Offhand vambrace", Vector3(0.25, 0.16, 0.5), Color(0.14, 0.28, 0.58))
 	left_arm.position = Vector3(-0.65, -0.68, -0.3)
 	rig.add_child(left_arm)
-	var shield := _make_box("Small jousting shield", Vector3(0.38, 0.48, 0.12), Color(0.72, 0.08, 0.12))
+	var shield := MeshInstance3D.new()
+	var shield_plane := PlaneMesh.new()
+	shield_plane.size = Vector2(0.48, 0.62)
+	shield.mesh = shield_plane
 	shield.position = Vector3(-0.67, -0.48, -0.58)
+	shield.rotation_degrees.x = 90
+	var shield_material := StandardMaterial3D.new()
+	shield_material.albedo_texture = load("res://assets/royal_shield.svg")
+	shield_material.roughness = 0.42
+	shield_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	shield.material_override = shield_material
 	rig.add_child(shield)
-	var shield_badge := _make_sphere_child(rig, "Shield gold boss", Vector3(-0.67, -0.48, -0.67), 0.11, Color(1.0, 0.75, 0.12))
 
 func _make_opponent(pos: Vector3) -> Node3D:
 	var root := Node3D.new()
 	root.name = "RivalJouster"
 	root.position = pos
 	add_child(root)
-	_add_box_child(root, "Crimson armor", Vector3(0, 0, 0), Vector3(0.8, 1.0, 0.5), Color(0.65, 0.06, 0.1))
-	_add_sphere_child(root, "Rival helmet", Vector3(0, 0.78, 0), 0.38, Color(0.78, 0.81, 0.87))
-	_add_box_child(root, "Helmet visor", Vector3(0, 0.76, 0.34), Vector3(0.48, 0.13, 0.06), Color(0.07, 0.12, 0.2))
-	_add_box_child(root, "Gold crest", Vector3(0, 1.18, 0), Vector3(0.13, 0.45, 0.13), Color(1.0, 0.68, 0.08))
-	_add_box_child(root, "Jetpack", Vector3(-0.55, 0.0, 0), Vector3(0.3, 0.85, 0.4), Color(0.22, 0.25, 0.3))
-	_add_glow_orb_child(root, Vector3(-0.55, -0.55, 0), 0.17, Color(0.1, 0.7, 1.0))
-	_add_glow_orb_child(root, Vector3(-0.55, -0.85, 0), 0.11, Color(1.0, 0.35, 0.05))
-	var lance := _make_cylinder("Rival lance", 0.045, 2.7, Color(0.58, 0.34, 0.13))
+	_add_capsule_child(root, "Crimson armored torso", Vector3(0, 0, 0), 0.39, 1.05, Color(0.58, 0.035, 0.075))
+	_add_sphere_child(root, "Polished steel helmet", Vector3(0, 0.78, 0), 0.36, Color(0.78, 0.83, 0.9))
+	_add_box_child(root, "Dark helmet visor", Vector3(0, 0.76, 0.33), Vector3(0.42, 0.11, 0.045), Color(0.035, 0.07, 0.12))
+	_add_box_child(root, "Gold helmet crest", Vector3(0, 1.15, 0), Vector3(0.10, 0.34, 0.10), Color(1.0, 0.68, 0.08))
+	_add_sphere_child(root, "Left shoulder plate", Vector3(-0.43, 0.34, 0), 0.25, Color(0.68, 0.08, 0.12))
+	_add_sphere_child(root, "Right shoulder plate", Vector3(0.43, 0.34, 0), 0.25, Color(0.68, 0.08, 0.12))
+	_add_cylinder_child(root, "Jetpack left tank", Vector3(-0.43, 0.0, -0.28), 0.13, 0.72, Color(0.32, 0.35, 0.4))
+	_add_cylinder_child(root, "Jetpack right tank", Vector3(-0.68, 0.0, -0.28), 0.13, 0.72, Color(0.32, 0.35, 0.4))
+	_add_glow_orb_child(root, Vector3(-0.43, -0.48, -0.28), 0.12, Color(0.12, 0.62, 1.0))
+	_add_glow_orb_child(root, Vector3(-0.68, -0.48, -0.28), 0.12, Color(1.0, 0.34, 0.05))
+	var lance := _make_cylinder("Rival lance", 0.04, 2.7, Color(0.58, 0.34, 0.13))
 	lance.rotation_degrees.x = 90
 	lance.position = Vector3(0.7, 0.0, 1.0)
 	root.add_child(lance)
@@ -442,6 +476,30 @@ func _add_glow_orb_child(parent: Node3D, pos: Vector3, radius: float, color: Col
 	orb.position = pos
 	orb.material_override = _mat(color, true)
 	parent.add_child(orb)
+
+func _add_cylinder(label: String, pos: Vector3, radius: float, height: float, color: Color) -> MeshInstance3D:
+	var item := _make_cylinder(label, radius, height, color)
+	item.position = pos
+	add_child(item)
+	return item
+
+func _add_capsule_child(parent: Node3D, label: String, pos: Vector3, radius: float, height: float, color: Color) -> MeshInstance3D:
+	var item := MeshInstance3D.new()
+	item.name = label
+	var mesh := CapsuleMesh.new()
+	mesh.radius = radius
+	mesh.height = height
+	item.mesh = mesh
+	item.position = pos
+	item.material_override = _mat(color)
+	parent.add_child(item)
+	return item
+
+func _add_cylinder_child(parent: Node3D, label: String, pos: Vector3, radius: float, height: float, color: Color) -> MeshInstance3D:
+	var item := _make_cylinder(label, radius, height, color)
+	item.position = pos
+	parent.add_child(item)
+	return item
 
 func _ease_out(t: float) -> float:
 	return 1.0 - pow(1.0 - clampf(t, 0.0, 1.0), 3.0)
