@@ -103,6 +103,7 @@ func _build_world() -> void:
 	for z in range(-16, 8, 2):
 		_add_box("Lane dash", Vector3(0, 0.015, float(z)), Vector3(0.055, 0.025, 0.5), Color(1.0, 0.85, 0.53))
 
+	_build_green_countryside()
 	_build_stands()
 	_build_royal_box()
 	_build_flags()
@@ -115,6 +116,47 @@ func _build_world() -> void:
 	camera.fov = 82.0
 	camera.current = true
 	add_child(camera)
+
+func _build_green_countryside() -> void:
+	# Broad grassy grounds sit below the raised dirt jousting lane.
+	var grass := MeshInstance3D.new()
+	grass.name = "Green tournament grounds"
+	var grass_mesh := PlaneMesh.new()
+	grass_mesh.size = Vector2(90.0, 90.0)
+	grass.mesh = grass_mesh
+	grass.position = Vector3(0, -0.49, -12)
+	var grass_mat := StandardMaterial3D.new()
+	grass_mat.albedo_color = Color(0.20, 0.39, 0.16)
+	grass_mat.roughness = 1.0
+	grass.material_override = grass_mat
+	add_child(grass)
+
+	# Soft rolling hills frame the arena without obscuring the jousting lane.
+	for side in [-1, 1]:
+		for i in range(3):
+			var hill := _make_sphere("Rolling green hillside", Vector3(float(side) * (15.0 + i * 5.0), -0.2 + i * 0.25, -13.0 - i * 8.0), 1.0, Color(0.25 + i * 0.025, 0.43 + i * 0.025, 0.18))
+			hill.scale = Vector3(7.0, 2.0 + i * 0.35, 11.0)
+
+	# A distant northern-European stone keep: towers, curtain wall and slate roofs.
+	_add_box("Distant castle curtain wall", Vector3(0, 3.1, -30.0), Vector3(25.0, 5.0, 1.2), Color(0.48, 0.49, 0.45))
+	for x in [-10.0, -5.0, 0.0, 5.0, 10.0]:
+		_add_box("Castle battlement", Vector3(x, 5.85, -30.0), Vector3(1.1, 0.65, 1.4), Color(0.55, 0.55, 0.50))
+	for x in [-12.0, 12.0]:
+		_add_cylinder("Castle round tower", Vector3(x, 4.0, -30.0), 1.55, 8.0, Color(0.52, 0.53, 0.49))
+		_add_cone_roof(x, 8.5, -30.0)
+	# Small leafy trees break up the green horizon.
+	for side in [-1, 1]:
+		for i in range(4):
+			var tx := float(side) * (11.5 + float(i) * 2.3)
+			var tz := -22.0 + float(i) * 6.0
+			_add_cylinder("Tree trunk", Vector3(tx, 1.0, tz), 0.22, 2.0, Color(0.30, 0.19, 0.10))
+			var crown := _make_sphere("Leafy tree crown", Vector3(tx, 2.45, tz), 1.0, Color(0.16, 0.34, 0.13))
+			crown.scale = Vector3(1.0, 1.2, 0.9)
+
+func _add_cone_roof(x: float, y: float, z: float) -> void:
+	var roof := _make_cone("Slate castle tower roof", 1.85, 2.2, Color(0.16, 0.23, 0.29))
+	roof.position = Vector3(x, y, z)
+	add_child(roof)
 
 func _build_stands() -> void:
 	var seat_colors := [Color(0.10, 0.27, 0.66), Color(0.72, 0.10, 0.14), Color(0.91, 0.59, 0.12), Color(0.12, 0.43, 0.27), Color(0.76, 0.77, 0.81)]
@@ -177,25 +219,26 @@ func _build_first_person_view() -> void:
 	camera.add_child(rig)
 	view_lance = rig
 
-	var shaft := _make_cylinder("Your lance shaft", 0.045, 2.8, Color(0.48, 0.25, 0.10))
+	var shaft := _make_cylinder("RIGHT HAND - your lance shaft", 0.045, 2.8, Color(0.48, 0.25, 0.10))
 	shaft.rotation_degrees.x = 90
 	shaft.position = Vector3(0.53, -0.39, -1.35)
 	rig.add_child(shaft)
-	var grip := _make_cylinder("Lance grip", 0.075, 0.42, Color(0.18, 0.12, 0.09))
+	var grip := _make_cylinder("RIGHT HAND - lance grip", 0.075, 0.42, Color(0.18, 0.12, 0.09))
 	grip.rotation_degrees.x = 90
 	grip.position = Vector3(0.53, -0.39, -0.42)
 	rig.add_child(grip)
-	var tip := _make_cone("Steel lance tip", 0.13, 0.42, Color(0.78, 0.88, 0.98))
+	var tip := _make_cone("RIGHT HAND - steel lance tip", 0.13, 0.42, Color(0.78, 0.88, 0.98))
 	tip.rotation_degrees.x = -90
 	tip.position = Vector3(0.53, -0.39, -2.92)
 	rig.add_child(tip)
 
-	var forearm := _add_capsule_child(rig, "Rounded armored forearm", Vector3(0.68, -0.65, -0.42), 0.15, 0.72, Color(0.12, 0.27, 0.61))
+	var forearm := _add_capsule_child(rig, "RIGHT HAND - rounded armored forearm", Vector3(0.68, -0.65, -0.42), 0.15, 0.72, Color(0.12, 0.27, 0.61))
 	forearm.rotation_degrees.x = 90
-	var gauntlet := _make_sphere_child(rig, "Steel gauntlet", Vector3(0.53, -0.48, -0.55), 0.2, Color(0.72, 0.78, 0.85))
-	var left_arm := _add_capsule_child(rig, "Rounded offhand vambrace", Vector3(-0.65, -0.68, -0.3), 0.12, 0.56, Color(0.12, 0.27, 0.61))
+	var gauntlet := _make_sphere_child(rig, "RIGHT HAND - steel gauntlet", Vector3(0.53, -0.48, -0.55), 0.2, Color(0.72, 0.78, 0.85))
+	var left_arm := _add_capsule_child(rig, "LEFT HAND - rounded offhand vambrace", Vector3(-0.65, -0.68, -0.3), 0.12, 0.56, Color(0.12, 0.27, 0.61))
 	left_arm.rotation_degrees.x = 90
 	var shield := MeshInstance3D.new()
+	shield.name = "LEFT HAND - royal shield"
 	var shield_plane := PlaneMesh.new()
 	shield_plane.size = Vector2(0.48, 0.62)
 	shield.mesh = shield_plane
