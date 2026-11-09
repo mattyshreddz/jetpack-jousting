@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>Jetpack Jousting</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101827;color:#fff;font-family:system-ui,-apple-system,sans-serif;touch-action:none}#game{display:block;width:100vw;height:100dvh}#ui{position:fixed;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}header{text-align:center;text-shadow:0 2px 8px #000;padding-top:12px}h1{font-size:clamp(20px,6vw,30px);margin:0;letter-spacing:2px}#status{font-size:13px;color:#d8e5f5;margin-top:5px}#bottom{text-align:center;padding-bottom:18px;text-shadow:0 2px 8px #000}#hint{font-size:12px;color:#d8e5f5;margin-bottom:9px}#calibrate{pointer-events:auto;border:1px solid #d9e4f2;background:#18283e;color:white;border-radius:24px;padding:12px 22px;font-weight:700;font-size:15px}#message{font-size:18px;font-weight:800;min-height:28px;margin-bottom:10px}.touchzone{position:fixed;width:50%;height:50%;z-index:2;opacity:0}.tl{left:0;top:0}.tr{right:0;top:0}.bl{left:0;bottom:0}.br{right:0;bottom:0}#permission{position:fixed;inset:0;display:none;place-items:center;background:#101827ee;z-index:5;padding:28px;text-align:center}#permission button{border:0;border-radius:22px;padding:14px 22px;font-weight:800;font-size:16px}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="ui"><header><h1>JETPACK JOUSTING</h1><div id="status">CALIBRATE YOUR FLIGHT POSITION</div></header><div id="bottom"><div id="message">Ready when you are.</div><div id="hint">TOP: HIGH · BOTTOM: LOW &nbsp;|&nbsp; LEFT: BLOCK · RIGHT: THRUST</div><button id="calibrate">CALIBRATE & START</button></div></div>
+<div class="touchzone tl" data-action="high-block" aria-label="High block"></div><div class="touchzone bl" data-action="low-block" aria-label="Low block"></div><div class="touchzone tr" data-action="high-attack" aria-label="High thrust"></div><div class="touchzone br" data-action="low-attack" aria-label="Low thrust"></div>
+<div id="permission"><div><h2>Allow motion controls</h2><p>Tap below to enable your iPhone's gyroscope, then hold your phone in your normal playing position.</p><button id="allow">ENABLE MOTION</button></div></div>
+<script>
+const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d'),statusEl=document.querySelector('#status'),message=document.querySelector('#message'),calBtn=document.querySelector('#calibrate'),permission=document.querySelector('#permission');
+let w,h,dpr,tiltX=0,tiltY=0,zeroX=0,zeroY=0,motion=false,started=false,round=0,score=0,enemyAction='high',lastAction='',flash=0;
+function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}addEventListener('resize',resize);resize();
+function draw(){ctx.clearRect(0,0,w,h);let horizon=h*.34,shift=tiltX*12;
+let sky=ctx.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#182b49');sky.addColorStop(1,'#71839a');ctx.fillStyle=sky;ctx.fillRect(0,0,w,horizon);
+ctx.fillStyle='#29374a';ctx.fillRect(0,horizon,w,h*.1);
+ctx.fillStyle='#5a3b2c';ctx.fillRect(0,horizon+h*.1,w,h*.56);
+ctx.fillStyle='#806044';ctx.beginPath();ctx.moveTo(w*.12,h);ctx.lineTo(w*.39,horizon+h*.1);ctx.lineTo(w*.61,horizon+h*.1);ctx.lineTo(w*.88,h);ctx.fill();
+ctx.strokeStyle='#c7a16d';ctx.lineWidth=3;for(let i=0;i<9;i++){let y=horizon+h*.1+i*i*2.3;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+for(let side of [0,1]){let x=side?w*.88:w*.12;ctx.fillStyle='#c6a77e';ctx.fillRect(x-w*.035,horizon-h*.1,w*.07,h*.22);ctx.fillStyle='#9a2e2e';ctx.beginPath();ctx.moveTo(x-w*.05,horizon-h*.1);ctx.lineTo(x,horizon-h*.2);ctx.lineTo(x+w*.05,horizon-h*.1);ctx.fill()}
+drawKnight(w*.5+shift,h*.48,1.0,'#aeb9c6',true);drawKnight(w*.5-shift,h*.37,.52,'#a83232',false);
+ctx.fillStyle='#f4dfb5';ctx.font='bold 13px system-ui';ctx.textAlign='center';ctx.fillText('OPPONENT',w*.5-shift,h*.25);
+ctx.fillStyle='#fff';ctx.font='bold 14px system-ui';ctx.fillText('YOU',w*.5+shift,h*.72);
+ctx.fillStyle='#111827aa';ctx.fillRect(14,h*.16,w-28,7);ctx.fillStyle='#d9b56d';ctx.fillRect(14,h*.16,(w-28)*Math.max(0,1-score*.12),7);
+if(flash>0){ctx.fillStyle='rgba(255,255,255,'+(flash*.3)+')';ctx.fillRect(0,0,w,h);flash-=.04}
+requestAnimationFrame(draw)}
+function drawKnight(x,y,s,color,player){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle='#18212d';ctx.fillRect(-22,-8,44,40);ctx.fillStyle=color;ctx.fillRect(-17,-43,34,39);ctx.fillStyle='#e3cba5';ctx.beginPath();ctx.arc(0,-51,17,0,Math.PI*2);ctx.fill();ctx.fillStyle='#29394d';ctx.fillRect(-17,-55,34,9);ctx.fillStyle='#e8edf2';ctx.fillRect(-13,-68,26,9);ctx.fillStyle='#d2dbe5';ctx.beginPath();ctx.moveTo(12,-27);ctx.lineTo(player?90:40,-18);ctx.lineTo(player?100:-40,-13);ctx.lineTo(12,-17);ctx.fill();ctx.fillStyle='#ffb34d';ctx.fillRect(-24,2,9,22);ctx.fillRect(15,2,9,22);ctx.fillStyle='#ff8b32';ctx.beginPath();ctx.moveTo(-23,25);ctx.lineTo(-18,43+Math.random()*3);ctx.lineTo(-13,25);ctx.fill();ctx.beginPath();ctx.moveTo(16,25);ctx.lineTo(20,43+Math.random()*3);ctx.lineTo(24,25);ctx.fill();ctx.restore()}
+draw();
+function setMessage(t){message.textContent=t}
+async function enableMotion(){if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){try{const p=await DeviceOrientationEvent.requestPermission();if(p!=='granted'){setMessage('Motion permission was not granted.');return}}catch(e){setMessage('Could not enable motion controls.');return}}addEventListener('deviceorientation',e=>{if(e.beta==null||e.gamma==null)return;tiltX=Math.max(-1,Math.min(1,(e.gamma-zeroX)/35));tiltY=Math.max(-1,Math.min(1,(e.beta-zeroY)/35));});motion=true;permission.style.display='none';calibrateNow()}
+function calibrateNow(){zeroX=window._beta||0;zeroY=window._gamma||0;addEventListener('deviceorientation',e=>{if(e.beta!=null)window._beta=e.beta;if(e.gamma!=null)window._gamma=e.gamma});zeroX=window._gamma||0;zeroY=window._beta||0;started=true;statusEl.textContent='FLIGHT CALIBRATED · ROUND '+(round+1);calBtn.textContent='RECALIBRATE';setMessage('Opponent approaching!')}
+calBtn.addEventListener('click',()=>{if(!motion){permission.style.display='grid';return}calibrateNow()});
+document.querySelector('#allow').addEventListener('click',enableMotion);
+function act(action){if(!started){setMessage('Calibrate before the match!');return}lastAction=action;let high=action.includes('high'),block=action.includes('block'),correct=(block&&((enemyAction==='high'&&high)||(enemyAction==='low'&&!high)))||(!block&&((enemyAction==='high'&&high)||(enemyAction==='low'&&!high)));if(block){if(correct){score=Math.max(0,score-1);setMessage('PERFECT BLOCK! You read the attack.')}else{score++;setMessage('Wrong guard! You took a hit.')}}else{if(correct){score=Math.max(0,score-1);setMessage('CLEAN THRUST! Direct hit!')}else{score++;setMessage('Missed! Opponent countered.')}}flash=1;round++;enemyAction=Math.random()>.5?'high':'low';statusEl.textContent='ROUND '+(round+1)+' · HITS TAKEN: '+score;if(score>=5){setMessage('KNOCKED OUT! Tap calibrate to restart.');started=false;score=0;round=0}}
+document.querySelectorAll('.touchzone').forEach(z=>{z.addEventListener('pointerdown',e=>{e.preventDefault();act(z.dataset.action)})});
+</script>
+</body></html>
