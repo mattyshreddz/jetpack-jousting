@@ -42,3 +42,12 @@ A standalone iOS app export still requires macOS and Xcode. Xogot is the easiest
 
 ## Status
 Early gameplay and art prototype. Sensor steering, combat timing, touch feel, performance, and visual quality still need real-device testing and iteration.
+
+## Imported 3D models (asset drop-in)
+
+The current art pass uses real Quaternius and Avramania models. Download the companion asset ZIP from the ChatGPT conversation and extract it into this project folder, merging its `assets` directory with the existing one. The expected paths include:
+
+- `assets/models/quaternius/KnightCharacter.fbx`
+- `assets/models/avramania/mdvl_castle_tower_round_base_01.glb`
+
+Open the project in Godot 4 and let the FBX/GLB import process finish before running. The companion ZIP includes the relevant CC0 license notices and Quaternius weapon instructions. The source project is updated to load these paths; the models are not bundled into this GitHub repository.
