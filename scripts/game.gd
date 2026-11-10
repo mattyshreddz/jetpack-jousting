@@ -140,19 +140,19 @@ func _build_green_countryside() -> void:
 
 	# Imported modular stone keep built from real GLB assets.
 	for i in range(16):
-		_instance_model("res://assets/models/avramania/mdvl_village_wall_plain_01.glb", Vector3(-15.0 + float(i) * 2.0, 0.0, -24.0), 1.0)
-	_instance_model("res://assets/models/avramania/mdvl_castle_gate_doors_01.glb", Vector3(0.0, 0.0, -23.72), 1.0)
+		_instance_model("res://assets/models/avramania/Village_Builder/glTF/mdvl_village_wall_plain_01.glb", Vector3(-15.0 + float(i) * 2.0, 0.0, -24.0), 1.0)
+	_instance_model("res://assets/models/avramania/Castle_Siege/glTF/mdvl_castle_gate_doors_01.glb", Vector3(0.0, 0.0, -23.72), 1.0)
 	for x in [-12.0, 12.0]:
-		_instance_model("res://assets/models/avramania/mdvl_castle_tower_round_base_01.glb", Vector3(x, 0.0, -24.0), 1.0)
-		_instance_model("res://assets/models/avramania/mdvl_castle_tower_round_mid_01.glb", Vector3(x, 2.4, -24.0), 1.0)
-		_instance_model("res://assets/models/avramania/mdvl_castle_tower_round_roof_01.glb", Vector3(x, 4.8, -24.0), 1.0)
+		_instance_model("res://assets/models/avramania/Castle_Siege/glTF/mdvl_castle_tower_round_base_01.glb", Vector3(x, 0.0, -24.0), 1.0)
+		_instance_model("res://assets/models/avramania/Castle_Siege/glTF/mdvl_castle_tower_round_mid_01.glb", Vector3(x, 2.4, -24.0), 1.0)
+		_instance_model("res://assets/models/avramania/Castle_Siege/glTF/mdvl_castle_tower_round_roof_01.glb", Vector3(x, 4.8, -24.0), 1.0)
 	# Real low-poly birch trees and shrubs frame the arena.
 	for side in [-1, 1]:
 		for i in range(3):
 			var tx := float(side) * (13.0 + float(i) * 3.0)
 			var tz := -17.0 - float(i) * 7.0
-			_instance_model("res://assets/models/avramania/mdvl_nature_birch_01.glb", Vector3(tx, -0.05, tz), 1.15)
-			_instance_model("res://assets/models/avramania/mdvl_nature_bush_01.glb", Vector3(tx - float(side) * 1.8, -0.05, tz + 1.2), 1.25)
+			_instance_model("res://assets/models/avramania/Nature_Terrain/glTF/mdvl_nature_birch_01.glb", Vector3(tx, -0.05, tz), 1.15)
+			_instance_model("res://assets/models/avramania/Nature_Terrain/glTF/mdvl_nature_bush_01.glb", Vector3(tx - float(side) * 1.8, -0.05, tz + 1.2), 1.25)
 
 func _add_cone_roof(x: float, y: float, z: float) -> void:
 	var roof := _make_cone("Slate castle tower roof", 1.85, 2.2, Color(0.16, 0.23, 0.29))
@@ -234,7 +234,7 @@ func _build_first_person_view() -> void:
 
 	var forearm := _add_capsule_child(rig, "RIGHT HAND - rounded armored forearm", Vector3(0.68, -0.65, -0.42), 0.15, 0.72, Color(0.12, 0.27, 0.61))
 	forearm.rotation_degrees.x = 90
-	var gauntlet := _make_sphere_child(rig, "RIGHT HAND - steel gauntlet", Vector3(0.53, -0.48, -0.55), 0.2, Color(0.72, 0.78, 0.85))
+	var _gauntlet := _make_sphere_child(rig, "RIGHT HAND - steel gauntlet", Vector3(0.53, -0.48, -0.55), 0.2, Color(0.72, 0.78, 0.85))
 	var left_arm := _add_capsule_child(rig, "LEFT HAND - rounded offhand vambrace", Vector3(-0.65, -0.68, -0.3), 0.12, 0.56, Color(0.12, 0.27, 0.61))
 	left_arm.rotation_degrees.x = 90
 	var shield := MeshInstance3D.new()
